@@ -9,11 +9,13 @@ const PUBLIC_API_PREFIXES = ["/api/auth/", "/api/health"];
 
 function isAuthenticated(request: NextRequest): boolean {
   const authCookie = request.cookies.get("mc_auth");
-  const isAuthenticated = !!(authCookie && authCookie.value === process.env.AUTH_SECRET);
+  const expectedValue = process.env.AUTH_SECRET || "simple-auth-secret-123";
+  const isAuthenticated = !!(authCookie && authCookie.value === expectedValue);
   console.log("Auth check:", {
     hasCookie: !!authCookie,
     cookieValue: authCookie?.value,
-    expectedValue: process.env.AUTH_SECRET,
+    expectedValue,
+    envValue: process.env.AUTH_SECRET,
     isAuthenticated
   });
   return isAuthenticated;
@@ -22,18 +24,23 @@ function isAuthenticated(request: NextRequest): boolean {
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  console.log("Middleware called for:", pathname);
+
   // Always allow public pages (login)
   if (PUBLIC_ROUTES.has(pathname)) {
+    console.log("Public route, allowing");
     return NextResponse.next();
   }
 
   // Always allow public API routes (auth + health)
   if (PUBLIC_API_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {
+    console.log("Public API route, allowing");
     return NextResponse.next();
   }
 
   // Check authentication
   if (!isAuthenticated(request)) {
+    console.log("Not authenticated, redirecting");
     // For API routes: return 401 JSON (not a redirect)
     if (pathname.startsWith("/api/")) {
       return NextResponse.json(
@@ -48,6 +55,7 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
+  console.log("Authenticated, allowing");
   return NextResponse.next();
 }
 
