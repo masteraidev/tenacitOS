@@ -1,10 +1,12 @@
 {
   "build": {
     "env": {
-      "ADMIN_PASSWORD": "password123"
+      "ADMIN_PASSWORD": "password123",
+      "AUTH_SECRET": "PTkEnw9Uz/kvX4iG/WTodM80/VIMVIQOQmbI6NxSNkk="
     }
   },
   "env": {
-    "ADMIN_PASSWORD": "password123"
+    "ADMIN_PASSWORD": "password123",
+    "AUTH_SECRET": "PTkEnw9Uz/kvX4iG/WTodM80/VIMVIQOQmbI6NxSNkk="
   }
 }
