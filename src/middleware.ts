@@ -23,9 +23,12 @@ function isAuthenticated(request: NextRequest): boolean {
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-
-  console.log("Middleware called for:", pathname);
-
+  const cookieHeader = request.headers.get("cookie");
+  
+  console.log("=== MIDDLEWARE DEBUG ===");
+  console.log("Path:", pathname);
+  console.log("Cookie header:", cookieHeader);
+  
   // Always allow public pages (login)
   if (PUBLIC_ROUTES.has(pathname)) {
     console.log("Public route, allowing");
@@ -39,6 +42,9 @@ export function middleware(request: NextRequest) {
   }
 
   // Check authentication
+  const authCookie = request.cookies.get("mc_auth");
+  console.log("Auth cookie:", authCookie);
+  
   if (!isAuthenticated(request)) {
     console.log("Not authenticated, redirecting");
     // For API routes: return 401 JSON (not a redirect)
