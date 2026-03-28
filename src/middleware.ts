@@ -23,33 +23,27 @@ function isAuthenticated(request: NextRequest): boolean {
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const cookieHeader = request.headers.get("cookie");
   
-  console.log("=== MIDDLEWARE DEBUG ===");
-  console.log("Path:", pathname);
-  console.log("Cookie header:", cookieHeader);
+  // Log the request path for debugging
+  if (!pathname.startsWith("/_next") && !pathname.includes(".")) {
+    console.log(`[Middleware] Path: ${pathname}`);
+  }
   
   // Always allow public pages (login)
   if (PUBLIC_ROUTES.has(pathname)) {
-    console.log("Public route, allowing");
     return NextResponse.next();
   }
 
   // Always allow public API routes (auth + health)
   if (PUBLIC_API_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {
-    console.log("Public API route, allowing");
     return NextResponse.next();
   }
 
   // Check authentication
-  const authCookie = request.cookies.get("mc_auth");
-  console.log("Auth cookie:", authCookie);
-  console.log("AUTH_SECRET env:", process.env.AUTH_SECRET);
-  
   if (!isAuthenticated(request)) {
-    console.log("Not authenticated, redirecting");
     // For API routes: return 401 JSON (not a redirect)
     if (pathname.startsWith("/api/")) {
+      console.log(`[Middleware] API route ${pathname} - not authenticated, returning 401`);
       return NextResponse.json(
         { error: "Unauthorized", message: "Authentication required" },
         { status: 401 }
@@ -57,12 +51,13 @@ export function middleware(request: NextRequest) {
     }
 
     // For page routes: redirect to login
+    console.log(`[Middleware] Page route ${pathname} - not authenticated, redirecting to login`);
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("from", pathname);
     return NextResponse.redirect(loginUrl);
   }
 
-  console.log("Authenticated, allowing");
+  console.log(`[Middleware] ${pathname} - authenticated, allowing`);
   return NextResponse.next();
 }
 
