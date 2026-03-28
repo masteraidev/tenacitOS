@@ -87,21 +87,23 @@ export async function POST(request: NextRequest) {
 
   const { password } = await request.json();
   
+  const adminPassword = process.env.ADMIN_PASSWORD || "password123";
   console.log("Login attempt:", {
     passwordLength: password?.length,
-    adminPasswordLength: process.env.ADMIN_PASSWORD?.length,
-    match: password === process.env.ADMIN_PASSWORD,
+    adminPasswordLength: adminPassword?.length,
+    match: password === adminPassword,
     expectedPassword: "password123"
   });
 
-  if (password === process.env.ADMIN_PASSWORD) {
+  if (password === adminPassword) {
     clearAttempts(ip); // Reset on success
 
     const response = NextResponse.json({ success: true });
 
     // Set auth cookie (7 days expiry)
     // secure=true in production (HTTPS), false in dev (HTTP localhost)
-    response.cookies.set("mc_auth", process.env.AUTH_SECRET!, {
+    const cookieValue = process.env.AUTH_SECRET || "simple-auth-secret-123";
+    response.cookies.set("mc_auth", cookieValue, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
