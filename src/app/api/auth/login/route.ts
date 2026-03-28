@@ -86,6 +86,12 @@ export async function POST(request: NextRequest) {
   }
 
   const { password } = await request.json();
+  
+  console.log("Login attempt:", {
+    passwordLength: password?.length,
+    adminPasswordLength: process.env.ADMIN_PASSWORD?.length,
+    match: password === process.env.ADMIN_PASSWORD
+  });
 
   if (password === process.env.ADMIN_PASSWORD) {
     clearAttempts(ip); // Reset on success
