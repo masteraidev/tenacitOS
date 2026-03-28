@@ -1,8 +1,5 @@
 {
   "build": {
-    "env": {
-      "ADMIN_PASSWORD": "password123",
-      "AUTH_SECRET": "simple-auth-secret-123"
-    }
+    "env": {}
   }
 }
