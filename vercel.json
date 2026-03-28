@@ -1,0 +1,10 @@
+{
+  "build": {
+    "env": {
+      "ADMIN_PASSWORD": "password123"
+    }
+  },
+  "env": {
+    "ADMIN_PASSWORD": "password123"
+  }
+}
