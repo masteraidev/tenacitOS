@@ -90,7 +90,8 @@ export async function POST(request: NextRequest) {
   console.log("Login attempt:", {
     passwordLength: password?.length,
     adminPasswordLength: process.env.ADMIN_PASSWORD?.length,
-    match: password === process.env.ADMIN_PASSWORD
+    match: password === process.env.ADMIN_PASSWORD,
+    expectedPassword: "password123"
   });
 
   if (password === process.env.ADMIN_PASSWORD) {
