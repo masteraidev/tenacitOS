@@ -44,6 +44,7 @@ export function middleware(request: NextRequest) {
   // Check authentication
   const authCookie = request.cookies.get("mc_auth");
   console.log("Auth cookie:", authCookie);
+  console.log("AUTH_SECRET env:", process.env.AUTH_SECRET);
   
   if (!isAuthenticated(request)) {
     console.log("Not authenticated, redirecting");
