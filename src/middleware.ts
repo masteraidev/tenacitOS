@@ -9,14 +9,14 @@ const PUBLIC_API_PREFIXES = ["/api/auth/", "/api/health"];
 
 function isAuthenticated(request: NextRequest): boolean {
   const authCookie = request.cookies.get("mc_auth");
-  // Hardcode the expected value for now to debug
-  const expectedValue = "simple-auth-secret-123";
+  const expectedValue = process.env.AUTH_SECRET;
   const isAuthenticated = !!(authCookie && authCookie.value === expectedValue);
   console.log("Auth check:", {
     hasCookie: !!authCookie,
     cookieValue: authCookie?.value,
     expectedValue,
-    isAuthenticated
+    isAuthenticated,
+    envLength: process.env.AUTH_SECRET?.length
   });
   return isAuthenticated;
 }
